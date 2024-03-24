@@ -29,16 +29,25 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 
 
 
-
+int i=0;
 
 void setup() {
 Serial.begin(9600);
 Serial.println(Card_List[0].left);
-Serial.println(Card_List[1].right);
+Serial.println(Card_List[264].right);
 
 }
 
 void loop() {
-  
+  if (i<265){
+    Serial.print(Card_List[i].left);
+    Serial.print(", ");
+    Serial.print(Card_List[i].right);
+    Serial.print(", ");
+    Serial.print(Card_List[i].Audio_file);
+    Serial.println();
+    i+=1;
+  }
+
 
 }
