@@ -27,7 +27,7 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 
 
 
-// TMRpcm tmrpcm;
+TMRpcm audio;
 
 
 
@@ -90,7 +90,8 @@ if (!SD.begin(SD_ChipSelectPin)){
 }
 Serial.println("Initialization done");
 
-
+//        SET SPEAKER PIN
+  audio.speakerPin = SPEAKER_PIN;
 }
 
 void loop() {
@@ -131,6 +132,11 @@ void loop() {
     Serial.println(right);
     Serial.println(Audio_file);
 
+    //Audio file testing
+    Audio_file = "womp-womp.wav";
+
+  audio.play(Audio_file);
+  Serial.println("Audio played");
 
     button_detector = false;  //This line is very important
   }
