@@ -136,7 +136,7 @@ void loop() {
     Audio_file = "womp-womp.wav";
 
   audio.play(Audio_file);
-  Serial.println("Audio played");
+  Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
     button_detector = false;  //This line is very important
   }
