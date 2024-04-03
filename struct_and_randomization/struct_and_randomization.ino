@@ -15,6 +15,7 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 //      INCLUDES
 
 #include <SD.h>
+#include <Adafruit_SSD1309.h>
 #include <SPI.h>
 #define SD_ChipSelectPin 10  // SD select is on pin 04
 #include <TMRpcm.h>
@@ -29,19 +30,16 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 
 TMRpcm audio;
 
-
-
-
 void get_filename(const int &card,char* array){
   sprintf(array,"%i",card);
   strcat(array,".txt");
 }
 
 
-int card_modulus(){
-  int random_num=5;
+short unsigned int card_modulus(){
+  short unsigned int random_num=5;
   do{
-    random_num = random(1,264);
+    random_num = (short unsigned)random(1,264);
   }while(random_num==5 || random_num == 53);
   return random_num;
 }
@@ -75,7 +73,7 @@ void setup() {
   //      INITIATE SERIAL CONNECTION
 Serial.begin(9600);
 
-Serial.println("Boot complete");
+Serial.println(F("Boot complete"));
 //        SEED RANDOM NUMBER
 randomSeed(analogRead(UNCONNECTED_ANALOG));
 
@@ -85,10 +83,10 @@ deck = new Deck(card_modulus());
 
 // initialize the SD card
 if (!SD.begin(SD_ChipSelectPin)){
-  Serial.println("Initialization failed");
+  Serial.println(F("Initialization failed"));
   while(1);
 }
-Serial.println("Initialization done");
+Serial.println(F("Initialization done"));
 
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;

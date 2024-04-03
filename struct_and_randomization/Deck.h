@@ -6,12 +6,12 @@
 
 class Deck{
   public:
-  Deck(int q);
-  int draw_card();
+  Deck(short unsigned int q);
+  short unsigned int draw_card();
 
   private:
-  int card_list[265];
-  int card_pos;
+  short unsigned int card_list[265];
+  short unsigned int card_pos;
 
 };
 
