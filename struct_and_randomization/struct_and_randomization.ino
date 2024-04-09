@@ -15,7 +15,6 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 //      INCLUDES
 
 #include <SD.h>
-#include <Adafruit_SSD1309.h>
 #include <SPI.h>
 #define SD_ChipSelectPin 10  // SD select is on pin 04
 #include <TMRpcm.h>
@@ -23,6 +22,7 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 #include "Deck.h"
 
 #define UNCONNECTED_ANALOG A0
+#define SCORING_PIN A1
 
 //      INITIALIZATIONS
 
@@ -90,9 +90,13 @@ Serial.println(F("Initialization done"));
 
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;
+  pinMode(SCORING_PIN, INPUT);
 }
 
 void loop() {
+
+  delay(200);
+  Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
 
   attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
   if(button_detector==true){
@@ -138,6 +142,7 @@ void loop() {
 
     button_detector = false;  //This line is very important
   }
+
   
 
 }

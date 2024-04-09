@@ -2,7 +2,6 @@
 #ifndef DECK_H
 #define DECK_H
 
-#include<Arduino.h>
 
 class Deck{
   public:
