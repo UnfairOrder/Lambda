@@ -12,6 +12,16 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 --This can also be done with the library manager in the ide.
 
 */
+/*  SCREEN OUTPUT INFORMATION
+* The SPI mode is the 4-wire mode, which is NOT the normal SCLK, MISO, MOSI, 
+and SS signals of SPI, but are SCLK (labeled SCK), DC, MOSI (labeled SDA), and 
+SS (labeled CS). That is, the display is write-only -- there is no output signal 
+back to the micro driving it. The DC pin, when in SPI mode, is a Data/Command 
+select input (Data when it's high or '1' and Command when it's low or '0'). Google
+ the SSD1309 datasheet for details. And this is a separate output pin that you'll 
+ need to supply from your micro that's outside of normal SPI operation.
+* 
+*/
 //      INCLUDES
 
 #include <SD.h>
@@ -25,8 +35,6 @@ https://www.instructables.com/Playing-Wave-file-using-arduino/
 #define SCORING_PIN A1
 
 //      INITIALIZATIONS
-
-
 
 TMRpcm audio;
 
@@ -70,7 +78,7 @@ void setup() {
   pinMode(button_pin,INPUT_PULLUP);
 
 
-  //      INITIATE SERIAL CONNECTION
+//      INITIATE SERIAL CONNECTION
 Serial.begin(9600);
 
 Serial.println(F("Boot complete"));
@@ -95,8 +103,12 @@ Serial.println(F("Initialization done"));
 
 void loop() {
 
-  delay(200);
-  Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
+  //Read scoring pin
+  // delay(200);
+  // Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
+
+  //Read potentiometer
+
 
   attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
   if(button_detector==true){
@@ -135,10 +147,11 @@ void loop() {
     Serial.println(Audio_file);
 
     //Audio file testing
-    Audio_file = "womp-womp.wav";
+    Audio_file = "womp.wav";
 
   audio.play(Audio_file);
-  Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
+  Serial.println(audio.isPlaying());
+  // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
     button_detector = false;  //This line is very important
   }
