@@ -26,16 +26,21 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 #include <SD.h>
 #include <SPI.h>
-#define SD_ChipSelectPin 10  // SD select is on pin 04
 #include <TMRpcm.h>
-#define SPEAKER_PIN 9;
 #include "Deck.h"
 
-#define UNCONNECTED_ANALOG A0
-#define SCORING_PIN A1
 
 //      INITIALIZATIONS
+#define SPEAKER_PIN 9;
+#define UNCONNECTED_ANALOG A0
+#define SCORING_PIN A1
+#define SD_ChipSelectPin 10
+Deck* deck;
+char* left={};
+char* right={};
+char* Audio_file={};
 
+const int button_pin = 2;
 TMRpcm audio;
 
 void get_filename(const int &card,char* array){
@@ -59,16 +64,6 @@ void button_raise(){
 
 
 //                        GLOBAL DECLARATIONS
-
-
-
-Deck* deck;
-char* left={};
-char* right={};
-char* Audio_file={};
-
-
-const int button_pin = 2;
 
 
 
