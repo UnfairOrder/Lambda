@@ -35,6 +35,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define UNCONNECTED_ANALOG A0
 #define SCORING_PIN A1
 #define SD_ChipSelectPin 10
+
 Deck* deck;
 char* left={};
 char* right={};
@@ -43,11 +44,26 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
+
+void score_check(){
+  //get hall sensor degree
+  //calculate the range for the score
+  //get potentiometer degree
+  //check if pot degree is in scoring range
+  //determine where pot is in scoring range
+
+  //take difference of left edge?
+  //iterate over bins?
+  //tree? bad idea but could be funny.
+  //Integer division of difference could work well?
+
+}
+
+
 void get_filename(const int &card,char* array){
   sprintf(array,"%i",card);
   strcat(array,".txt");
 }
-
 
 short unsigned int card_modulus(){
   short unsigned int random_num=5;
@@ -61,9 +77,6 @@ bool button_detector = false;
 void button_raise(){
   button_detector = true;
 }
-
-
-//                        GLOBAL DECLARATIONS
 
 
 
