@@ -21,11 +21,23 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
  the SSD1309 datasheet for details. And this is a separate output pin that you'll 
  need to supply from your micro that's outside of normal SPI operation.
 * 
+
+*Use U8g2 library for drivers
+*Appropriate U8G2 constructor is https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#ssd1309-128x64_noname2
+*   The above is confusing as hell and IDK what to do with it yet
+*   Amazon review says that this works with SSD1306 as well.
+*   How hard can it be??
+* For multiple SPI connections, the chip select pin needs to be different, but supposedly they can all exist on the same bus.
+*   I don't know why, but I read somewhere that the SD over SPI might cause issues. If that's the case then I think we might need to use the smaller OLED
+* displays over I2C.
+*
 */
 //      INCLUDES
 
 #include <SD.h>
 #include <SPI.h>
+#include <Wire.h>
+#include <U8g2lib.h>
 #include <TMRpcm.h>
 #include "Deck.h"
 #include <avr/pgmspace.h>
@@ -95,7 +107,7 @@ void score_check(){
       }
     }
   }
-  
+
   //Switch case for audio playback
   switch (score){
     case 0:
@@ -225,7 +237,4 @@ void loop() {
 
     button_detector = false;  //This line is very important
   }
-
-  
-
 }
