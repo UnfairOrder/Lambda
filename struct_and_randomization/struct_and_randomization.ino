@@ -45,7 +45,10 @@ const char two_point_audio[] PROGMEM= "2pt.wav";
 const char three_point_audio[] PROGMEM= "3pt.wav";
 const char four_point_audio[] PROGMEM= "4pt.wav";
 
-const char *score_audio[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
+PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
+
+//Line for loading strings from array into a string buffer.
+//strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[i])));
 
 char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
 
