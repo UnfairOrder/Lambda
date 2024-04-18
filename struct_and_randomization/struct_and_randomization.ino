@@ -151,6 +151,7 @@ void loop() {
 
   audio.play(Audio_file);
   Serial.println(audio.isPlaying());
+  while(audio.isPlaying());   //freeze the program while audio plays to avoid the memory leaks.
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
     button_detector = false;  //This line is very important
