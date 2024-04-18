@@ -75,7 +75,7 @@ void score_check(){
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
 
-  
+  //determine where pot is in scoring range
   if(score_pointer_diff>PIE_SECTION_DEG/2+3*PIE_SECTION_DEG){
     score=0;
   }else{
@@ -95,11 +95,30 @@ void score_check(){
       }
     }
   }
-  //determine where pot is in scoring range
+  
+  //Switch case for audio playback
+  switch (score){
+    case 0:
+    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+    break;
 
-  //take difference of left edge?
-  //iterate over bins?
-  //tree? bad idea but could be funny.
+    case 1:
+    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+    break;
+
+    case 2:
+    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+    break;
+
+    case 3:
+    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+    break;
+
+    case 4:
+    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+    break;
+  }
+  audio.play(score_audio_buffer);
 }
 
 
