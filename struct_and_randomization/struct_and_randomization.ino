@@ -28,6 +28,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <SPI.h>
 #include <TMRpcm.h>
 #include "Deck.h"
+#include <avr/pgmspace.h>
 
 
 //      INITIALIZATIONS
@@ -35,6 +36,18 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define UNCONNECTED_ANALOG A0
 #define SCORING_PIN A1
 #define SD_ChipSelectPin 10
+#define POT_PIN A2
+#define PIE_SECTION_DEG 12
+
+const char zero_point_audio[] PROGMEM= "0pt.wav";
+const char one_point_audio[] PROGMEM= "1pt.wav";
+const char two_point_audio[] PROGMEM= "2pt.wav";
+const char three_point_audio[] PROGMEM= "3pt.wav";
+const char four_point_audio[] PROGMEM= "4pt.wav";
+
+const char *score_audio[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
+
+char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
 
 Deck* deck;
 char* left={};
@@ -44,19 +57,46 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
+byte scoring_wheel_deg=0;
+byte pointer_deg = 0;
+short int score_pointer_diff = 0;
+byte score = 0;
+
 
 void score_check(){
   //get hall sensor degree
-  //calculate the range for the score
+  scoring_wheel_deg = ((byte)(analogRead(SCORING_PIN)-44)*(360.0/933));
+  scoring_wheel_deg = scoring_wheel_deg%181;  
   //get potentiometer degree
-  //check if pot degree is in scoring range
+  pointer_deg = analogRead(POT_PIN); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
+  //check if pot degree is in scoring range (Assume center of 4 point slice)
+  score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
+
+  
+  if(score_pointer_diff>PIE_SECTION_DEG/2+3*PIE_SECTION_DEG){
+    score=0;
+  }else{
+    if(score_pointer_diff>PIE_SECTION_DEG/2+2*PIE_SECTION_DEG){
+      score=1;
+    }else{
+      if(score_pointer_diff>PIE_SECTION_DEG/2+1*PIE_SECTION_DEG){
+        score=2;
+      }else{
+        if(score_pointer_diff>PIE_SECTION_DEG/2){
+          score=3;
+        }else{
+          if(score_pointer_diff<=PIE_SECTION_DEG/2){
+            score=4; 
+          }
+        }
+      }
+    }
+  }
   //determine where pot is in scoring range
 
   //take difference of left edge?
   //iterate over bins?
   //tree? bad idea but could be funny.
-  //Integer division of difference could work well?
-
 }
 
 
