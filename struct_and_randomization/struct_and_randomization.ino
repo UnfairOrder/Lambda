@@ -41,6 +41,8 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <TMRpcm.h>
 #include "Deck.h"
 #include <avr/pgmspace.h>
+#include <Arduino.h>
+#include "lambda_display.h"
 
 
 //      INITIALIZATIONS
@@ -50,6 +52,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define SD_ChipSelectPin 10
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
+#define SCREEN_WIDTH 128
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -72,11 +75,12 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, 8);
+
 byte scoring_wheel_deg=0;
 byte pointer_deg = 0;
 short int score_pointer_diff = 0;
 byte score = 0;
-
 
 void score_check(){
   //get hall sensor degree
@@ -227,6 +231,15 @@ void loop() {
     Serial.println(left);
     Serial.println(right);
     Serial.println(Audio_file);
+
+  //display on screen
+  u8g2.firstPage();
+  do{
+
+  draw_wrapped_text(left,0,u8g2);  
+  draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
+
+  }while(u8g2.nextPage());
 
     //Audio file testing
     Audio_file = "womp.wav";
