@@ -39,7 +39,6 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <Wire.h>
 #include <U8g2lib.h>
 #include <TMRpcm.h>
-#include "Deck.h"
 #include <avr/pgmspace.h>
 #include <Arduino.h>
 #include "lambda_display.h"
@@ -53,7 +52,8 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 #define SCREEN_WIDTH 128
-#define SCREEN_ChipSelectPin 8
+#define DISPLAY_CS 8
+#define DECK_SIZE 265;
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -68,7 +68,6 @@ PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_
 
 char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
 
-Deck* deck;
 char* left={};
 char* right={};
 char* Audio_file={};
@@ -76,7 +75,7 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, SCREEN_ChipSelectPin);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, DISPLAY_CS);
 
 byte scoring_wheel_deg=0;
 byte pointer_deg = 0;
@@ -144,6 +143,10 @@ void get_filename(const int &card,char* array){
   strcat(array,".txt");
 }
 
+
+
+short unsigned int shuffle;
+byte deck_pos = 1;
 short unsigned int card_modulus(){
   short unsigned int random_num=5;
   do{
@@ -162,26 +165,28 @@ void button_raise(){
                               //SETUP
 void setup() {
 
-  pinMode(button_pin,INPUT_PULLUP);
+  shuffle = card_modulus();
 
+  pinMode(button_pin,INPUT_PULLUP);
 
 //      INITIATE SERIAL CONNECTION
 Serial.begin(9600);
 
-Serial.println(F("Boot complete"));
+Serial.println(F("Boot"));
 //        SEED RANDOM NUMBER
 randomSeed(analogRead(UNCONNECTED_ANALOG));
 
 //        BUILD DECK
-deck = new Deck(card_modulus());
+
 
 
 // initialize the SD card
+Serial.print(F("Init:"));
 if (!SD.begin(SD_ChipSelectPin)){
-  Serial.println(F("Initialization failed"));
+  Serial.println(F("E"));
   while(1);
 }
-Serial.println(F("Initialization done"));
+Serial.println(F("S"));
 
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;
@@ -195,13 +200,13 @@ void loop() {
   // Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
 
   //Read potentiometer
-
-
+  
   attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
   if(button_detector==true){
     //do the card stuff
     //draw a card
-    short int drawn_card = deck->draw_card();
+    short int drawn_card = deck_pos*shuffle;
+    deck_pos+=1;
     //generate filename
     char filename[7];
     get_filename(drawn_card,filename);
@@ -213,7 +218,7 @@ void loop() {
     Serial.print("card: ");
     Serial.println(drawn_card);
 
-    unsigned long file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
+    unsigned short file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
     char file_buffer[file_size];
 
     //read into buffer
@@ -234,13 +239,13 @@ void loop() {
     Serial.println(Audio_file);
 
   //display on screen
-  u8g2.firstPage();
-  do{
+  // u8g2.firstPage();
+  // do{
 
-  draw_wrapped_text(left,0,u8g2);  
-  draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
+  // draw_wrapped_text(left,0,u8g2);  
+  // draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
 
-  }while(u8g2.nextPage());
+  // }while(u8g2.nextPage());
 
     //Audio file testing
     Audio_file = "womp.wav";
