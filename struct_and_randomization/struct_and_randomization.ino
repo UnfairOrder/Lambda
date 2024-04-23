@@ -88,7 +88,7 @@ void score_check(){
   scoring_wheel_deg = ((byte)(analogRead(SCORING_PIN)-44)*(360.0/933));
   scoring_wheel_deg = scoring_wheel_deg%181;  
   //get potentiometer degree
-  pointer_deg = analogRead(POT_PIN); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
+  pointer_deg = (1023-analogRead(POT_PIN))*0.2933; //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
 
