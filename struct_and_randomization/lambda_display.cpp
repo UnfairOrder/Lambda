@@ -2,6 +2,7 @@
 
 
 void draw_wrapped_text(const char* str_in, byte x_off, const U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI &screen){
+  screen.setFont(FONT);
   byte i=1;
   byte char_pos = 0;
   byte offset = 0;

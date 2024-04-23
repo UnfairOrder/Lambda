@@ -52,7 +52,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 #define SCREEN_WIDTH 128
-#define DISPLAY_CS 8
+#define DISPLAY_CS 6
 #define DECK_SIZE 265
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
@@ -76,7 +76,7 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, DISPLAY_CS);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, DISPLAY_CS, 8);
 
 byte scoring_wheel_deg=0;
 byte pointer_deg = 0;
@@ -166,9 +166,10 @@ void button_raise(){
 }
 
 
-
                               //SETUP
 void setup() {
+
+  u8g2.setFont(FONT);
 
   shuffle = card_modulus();
 
@@ -196,6 +197,7 @@ Serial.println(F("S"));
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;
   pinMode(SCORING_PIN, INPUT);
+
 }
 
 void loop() {
@@ -244,6 +246,9 @@ void loop() {
     Serial.println(Audio_file);
 
   //display on screen
+  /*
+  * TODO: I don't think that the lambda_display function works as is. Test in a new doc to ensure functionality before importing.
+  */
   // u8g2.firstPage();
   // do{
 
