@@ -53,7 +53,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define PIE_SECTION_DEG 12
 #define SCREEN_WIDTH 128
 #define DISPLAY_CS 8
-#define DECK_SIZE 265;
+#define DECK_SIZE 265
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -68,6 +68,7 @@ PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_
 
 char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
 
+File card_file;
 char* left={};
 char* right={};
 char* Audio_file={};
@@ -137,7 +138,8 @@ void score_check(){
   audio.play(score_audio_buffer);
 }
 
-
+char filename[7];
+unsigned short file_size;
 void get_filename(const int &card,char* array){
   sprintf(array,"%i",card);
   strcat(array,".txt");
@@ -145,9 +147,12 @@ void get_filename(const int &card,char* array){
 
 
 
-short unsigned int shuffle;
+short unsigned int shuffle=0;
 byte deck_pos = 1;
+short int drawn_card=0;
 short unsigned int card_modulus(){
+  randomSeed(UNCONNECTED_ANALOG);
+  random();
   short unsigned int random_num=5;
   do{
     random_num = (short unsigned)random(1,264);
@@ -205,20 +210,20 @@ void loop() {
   if(button_detector==true){
     //do the card stuff
     //draw a card
-    short int drawn_card = deck_pos*shuffle;
+    drawn_card = (drawn_card+deck_pos*shuffle%DECK_SIZE)+1;
     deck_pos+=1;
     //generate filename
-    char filename[7];
+
     get_filename(drawn_card,filename);
     //access file
-    File card_file = SD.open(filename);
+    card_file = SD.open(filename);
     card_file.seek(0);  //go to beginning of file
     // Serial.print("file opened: ");
     // Serial.print(filename);
-    Serial.print("card: ");
-    Serial.println(drawn_card);
+    Serial.print(F("card: "));
+    Serial.println(shuffle);
 
-    unsigned short file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
+    file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
     char file_buffer[file_size];
 
     //read into buffer
