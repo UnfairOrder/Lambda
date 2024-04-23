@@ -1,10 +1,11 @@
 #include "lambda_display.h"
 
 
-void draw_wrapped_text(const char* str_in, const byte &x_off, const U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI &screen){
+void draw_wrapped_text(const char* str_in, byte x_off, const U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI &screen){
   byte i=1;
   byte char_pos = 0;
   byte offset = 0;
+  x_off+=3;
   char substr_buf[11];
 
   //does the full lines

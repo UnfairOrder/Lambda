@@ -12,6 +12,6 @@
 #define FONT_WIDTH 6
 #define FONT_HEIGHT 12
 
-void draw_wrapped_text(const char* str_in, const byte &x_off, const U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI &screen);
+void draw_wrapped_text(const char* str_in, byte x_off, const U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI &screen);
 
 #endif

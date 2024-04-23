@@ -53,6 +53,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 #define SCREEN_WIDTH 128
+#define SCREEN_ChipSelectPin 8
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -75,7 +76,7 @@ char* Audio_file={};
 const int button_pin = 2;
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, 8);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R0, 13, 11, 10, SCREEN_ChipSelectPin);
 
 byte scoring_wheel_deg=0;
 byte pointer_deg = 0;
