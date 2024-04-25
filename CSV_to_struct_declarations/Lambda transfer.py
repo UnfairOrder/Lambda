@@ -1,5 +1,5 @@
 f = open("Digital Card Deck - Sheet1.csv","r")
-
+Audio_file_dir = "Audio"
 i=1
 
 for line in f:
@@ -9,7 +9,7 @@ for line in f:
 
     f_out.write(words[0]+'\n')
     f_out.write(words[1]+'\n')
-    f_out.write(words[3]+'\n')
+    f_out.write(Audio_file_dir+'/'+words[3]+'\n')
 
     f_out.close()
     i+=1

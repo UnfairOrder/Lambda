@@ -258,7 +258,8 @@ void loop() {
     left = strtok(file_buffer,"\n");
     right = strtok(NULL,"\n");
     Audio_file = strtok(NULL,"\n");
-    Audio_file[strlen(Audio_file)-1] = '\0';   //Add null to end of ding
+    Audio_file[strlen(Audio_file)-1] = '\0';
+    sprintf(Audio_file,"A/%s",Audio_file);
     strtok(NULL,"\n");
 
     Serial.println(left);
@@ -283,7 +284,7 @@ void loop() {
     }while(u8g2.nextPage());
 
   //Audio file testing
-  // Audio_file = "ding.wav";
+  Audio_file = "Audio/Bad-Good.wav";
 
   audio.play(Audio_file);
   Serial.println(audio.isPlaying());
