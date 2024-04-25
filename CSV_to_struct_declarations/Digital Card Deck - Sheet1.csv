@@ -3,7 +3,7 @@ Mildly addictive,Highly addictive,v,MildlyAdictive-HighlyAdictive.wav
 Hot,Cold,v,Hot-cold.wav
 Normal,Weird,v,Normal-Weird.wav
 Colorless,Colorful,v,Colorless-Colorful.wav
-Low calorie,High calorie,v,LowValorie-HighCalorie.wav
+Low calorie,High calorie,v,LowCalorie-HighCalorie.wav
 Feels bad,Feels good,v,FeelsBad-FeelsGood.wav
 Inessential,Essential,v,Inessential-Essential.wav
 Cheap,Expensive,v,Cheep-Expensive.wav
@@ -66,7 +66,7 @@ Mental activity,Physical activity,mi,MentalActivity-PhysicalActivity.wav
 Uncontroversial topic,Controversial topic,mi,UncontroversialTopic-ControversialTopic.wav
 Need,Want,mi,Need-Want.wav
 Dry food,Wet food,mi,DryFood-WetFood.wav
-Normal thing to own,Weird thing to own,mi,NoralTTO-WeirdTTO.wav
+Normal thing to own,Weird thing to own,mi,NormalTTO-WeirdTTO.wav
 Straight,Curvy,mi,Straight-Curvy.wav
 Bad person,Good person,mi,BadPerson-GoodPerson.wav
 80s,90s,mi,80s-90s.wav
@@ -115,13 +115,13 @@ Ineffective,Effective,,Ineffective-Effective.wav
 Unbelievable,Believable,,Unbelievable-Believable.wav
 Trashy,Classy,,Trashy-Classy.wav
 Temporary,Permanent,,Temp-Perm.wav
-Looks like a person,Doesn't look like a person,,LooksPerson-Doesn’t.wav
+Looks like a person,Doesn't look like a person,,LooksPerson-Doesnt.wav
 Tastes bad,Tastes good,,TastesBad-TastesGood.wav
 Sport,Game,,Sport-Game.wav
 Uncool,Cool,,Uncool-Cool.wav
 Worst living person,Greatest living person,,WorstLivingPerson-BestLivingPerson.wav
 Underrated,Overrated,,Underrated-Overrated.wav
-Messy food,Clean food,k,MessyFood-CleanFood.wav
+Messy food,Clean food,,MessyFood-CleanFood.wav
 Unethical,Ethical,,Unethical-Ethical.wav
 Bad gift,Good gift,,BadGift-GoodGift.wav
 Unfashionable,Fashionable,,Unfashionable-Fashionable.wav
@@ -149,7 +149,6 @@ Fad,Classic,,Fad-Classic.wav
 Stupid,Brilliant,,Stupid-Brilliant.wav
 Weak,Strong,,Weak-Strong.wav
 Useless invention,Useful invention,,UselessInvention-UsefulInvention.wav
-Liberal,Conservative,,
 Unpopular,Popular,,Unpopular-Popular.wav
 Friend,Enemy,,Friend-Enemy.wav
 Boring,Exciting,,Boring-Exciting.wav
