@@ -64,13 +64,13 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define reed_pin 3
 #define replay_pin 4
 
-const char zero_point_audio[] PROGMEM= "0pt.wav";
-const char one_point_audio[] PROGMEM= "1pt.wav";
-const char two_point_audio[] PROGMEM= "2pt.wav";
-const char three_point_audio[] PROGMEM= "3pt.wav";
-const char four_point_audio[] PROGMEM= "4pt.wav";
+// const char zero_point_audio[] PROGMEM= "0pt.wav";
+// const char one_point_audio[] PROGMEM= "1pt.wav";
+// const char two_point_audio[] PROGMEM= "2pt.wav";
+// const char three_point_audio[] PROGMEM= "3pt.wav";
+// const char four_point_audio[] PROGMEM= "4pt.wav";
 
-PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
+// PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
 
 //Line for loading strings from array into a string buffer.
 //strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[i])));
@@ -94,11 +94,13 @@ byte score = 0;
 void score_check(){
   //get hall sensor degree
   scoring_wheel_deg = ((byte)(analogRead(SCORING_PIN)-44)*(360.0/933));
-  scoring_wheel_deg = scoring_wheel_deg%181;  
+  scoring_wheel_deg = scoring_wheel_deg%181;
+  Serial.println(scoring_wheel_deg);  
   //get potentiometer degree
   pointer_deg = (1023-analogRead(POT_PIN))*0.2933; //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
+  Serial.println(pointer_deg);
 
   //determine where pot is in scoring range
   if(score_pointer_diff>PIE_SECTION_DEG/2+3*PIE_SECTION_DEG){
@@ -122,28 +124,32 @@ void score_check(){
   }
 
   //Switch case for audio playback
-  switch (score){
-    case 0:
-    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-    break;
+  // switch (score){
+  //   case 0:
+  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+  //   break;
 
-    case 1:
-    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-    break;
+  //   case 1:
+  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+  //   break;
 
-    case 2:
-    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-    break;
+  //   case 2:
+  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+  //   break;
 
-    case 3:
-    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-    break;
+  //   case 3:
+  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+  //   break;
 
-    case 4:
-    strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-    break;
-  }
-  Serial.println(score_audio_buffer);
+  //   case 4:
+  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
+  //   break;
+
+  //   default:
+  //   Serial.println(F("SCORE ERROR"));
+  //   break;
+  // }
+  // Serial.println(score_audio_buffer);
   Serial.print("Score: ");
   Serial.println(score);
 }
