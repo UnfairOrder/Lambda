@@ -76,7 +76,7 @@ PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_
 char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
 
 File card_file;
-char* left={};
+char* left = {};
 char* right={};
 char* Audio_file={};
 
@@ -256,8 +256,6 @@ void loop() {
     Audio_file[strlen(Audio_file)-1] = '\0';   //Add null to end of ding
     strtok(NULL,"\n");
 
-
-
     Serial.println(left);
     Serial.println(right);
     Serial.println(Audio_file);
@@ -288,6 +286,7 @@ void loop() {
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
     button_detector = false;  //This line is very important
+
   }
   if(screen_open){
     Serial.println(F("SCREEN OPEN"));
@@ -295,4 +294,5 @@ void loop() {
     delay(500);
     screen_open=false;
   }
+
 }
