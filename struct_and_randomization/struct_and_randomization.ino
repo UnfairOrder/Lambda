@@ -51,9 +51,15 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define SD_ChipSelectPin 10
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
+
 #define SCREEN_WIDTH 128
+#define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
+
 #define DECK_SIZE 265
+
+#define button_pin 2
+#define reed_pin 3
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -73,10 +79,9 @@ char* left={};
 char* right={};
 char* Audio_file={};
 
-const int button_pin = 2;
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, DISPLAY_CS, 8);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
 
 byte scoring_wheel_deg=0;
 byte pointer_deg = 0;
@@ -150,8 +155,9 @@ void get_filename(const int &card,char* array){
 short unsigned int shuffle=0;
 byte deck_pos = 1;
 short int drawn_card=0;
+
 short unsigned int card_modulus(){
-  randomSeed(UNCONNECTED_ANALOG);
+  randomSeed(analogRead(UNCONNECTED_ANALOG));
   random();
   short unsigned int random_num=5;
   do{
@@ -165,6 +171,11 @@ void button_raise(){
   button_detector = true;
 }
 
+bool screen_open = false; //assign in setup.
+void screen_reveal(){
+  screen_open = true;
+}
+
 
                               //SETUP
 void setup() {
@@ -174,6 +185,9 @@ void setup() {
   shuffle = card_modulus();
 
   pinMode(button_pin,INPUT_PULLUP);
+  pinMode(reed_pin,INPUT_PULLUP);
+
+  screen_open = !digitalRead(reed_pin);
 
 //      INITIATE SERIAL CONNECTION
 Serial.begin(9600);
@@ -207,7 +221,9 @@ void loop() {
   // Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
 
   //Read potentiometer
-  
+  //ATTACH INTERRUPT ONLY WORKS ON PINS 2 AND 3.
+  //Reed sensor is finicky. Sometimes seems to do falling edge, sometimes doesn't.
+  attachInterrupt(digitalPinToInterrupt(reed_pin), screen_reveal, FALLING);
   attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
   if(button_detector==true){
     //do the card stuff
@@ -239,6 +255,7 @@ void loop() {
     left = strtok(file_buffer,"\n");
     right = strtok(NULL,"\n");
     Audio_file = strtok(NULL,"\n");
+    Audio_file[strlen(Audio_file)-1] = '\0';   //Add null to end of ding
     strtok(NULL,"\n");
 
     Serial.println(left);
@@ -256,9 +273,14 @@ void loop() {
   // draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
 
   // }while(u8g2.nextPage());
+  u8g2.setFont(FONT);
+  u8g2.firstPage();
+    do{
+      u8g2.drawStr(0,20,"LAMBDA");
+    }while(u8g2.nextPage());
 
-    //Audio file testing
-    Audio_file = "womp.wav";
+  //Audio file testing
+  // Audio_file = "ding.wav";
 
   audio.play(Audio_file);
   Serial.println(audio.isPlaying());
@@ -266,5 +288,11 @@ void loop() {
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
     button_detector = false;  //This line is very important
+  }
+  if(screen_open){
+    Serial.println(F("SCREEN OPEN"));
+    // score_check();
+    delay(500);
+    screen_open=false;
   }
 }
