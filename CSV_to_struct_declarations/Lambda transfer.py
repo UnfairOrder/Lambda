@@ -9,7 +9,7 @@ for line in f:
 
     f_out.write(words[0]+'\n')
     f_out.write(words[1]+'\n')
-    f_out.write("ding.wav"+'\n')
+    f_out.write(words[3]+'\n')
 
     f_out.close()
     i+=1
