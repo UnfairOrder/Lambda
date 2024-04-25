@@ -143,7 +143,9 @@ void score_check(){
     strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
     break;
   }
-  audio.play(score_audio_buffer);
+  Serial.println(score_audio_buffer);
+  Serial.print("Score: ");
+  Serial.println(score);
 }
 
 char filename[11];
@@ -317,7 +319,7 @@ void loop() {
 
   if(screen_open){
     Serial.println(F("SCREEN OPEN"));
-    audio.play(Audio_file);
+    score_check();
     // score_check();
     delay(500);
     screen_open=false;
