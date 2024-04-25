@@ -212,6 +212,8 @@ Serial.println(F("S"));
 
 }
 
+
+
 void loop() {
 
   //Read scoring pin
@@ -223,10 +225,13 @@ void loop() {
   //Reed sensor is finicky. Sometimes seems to do falling edge, sometimes doesn't.
   attachInterrupt(digitalPinToInterrupt(reed_pin), screen_reveal, FALLING);
   attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
+
+
+
   if(button_detector==true){
     //do the card stuff
     //draw a card
-    drawn_card = (drawn_card+deck_pos*shuffle%DECK_SIZE)+1;
+    drawn_card = ((drawn_card+deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
     //generate filename
 
@@ -294,5 +299,8 @@ void loop() {
     delay(500);
     screen_open=false;
   }
+  
+
+  //FOR TESTING THE TIME DELAY MEMORY THEORY
 
 }
