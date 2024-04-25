@@ -52,6 +52,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 
+
 #define SCREEN_WIDTH 128
 #define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
@@ -59,8 +60,9 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define DECK_SIZE 256   //if this changes, change the prime factors as well in the card modulus function
 #define CARD_DIR "Cdt"
 
-#define button_pin 2
+#define newCard_button_pin 2
 #define reed_pin 3
+#define replay_pin 4
 
 const char zero_point_audio[] PROGMEM= "0pt.wav";
 const char one_point_audio[] PROGMEM= "1pt.wav";
@@ -165,16 +167,16 @@ short unsigned int card_modulus(){
   return random_num;
 }
 
-bool button_detector = false;
-void button_raise(){
-  button_detector = true;
+bool newCard_button_detector = false;
+void newCard_button_raise(){
+  newCard_button_detector = true;
 }
+
 
 bool screen_open = false; //assign in setup.
 void screen_reveal(){
   screen_open = true;
 }
-
 
                               //SETUP
 void setup() {
@@ -186,8 +188,9 @@ void setup() {
   Serial.print(F("Shuffle Seed: "));
   Serial.println(shuffle);
 
-  pinMode(button_pin,INPUT_PULLUP);
+  pinMode(newCard_button_pin,INPUT_PULLUP);
   pinMode(reed_pin,INPUT_PULLUP);
+  pinMode(replay_pin,INPUT);
 
   screen_open = !digitalRead(reed_pin);
 
@@ -199,7 +202,6 @@ Serial.println(F("Boot"));
 randomSeed(analogRead(UNCONNECTED_ANALOG));
 
 //        BUILD DECK
-
 
 
 // initialize the SD card
@@ -216,8 +218,6 @@ Serial.println(F("S"));
 
 }
 
-
-
 void loop() {
 
   //Read scoring pin
@@ -228,11 +228,11 @@ void loop() {
   //ATTACH INTERRUPT ONLY WORKS ON PINS 2 AND 3.
   //Reed sensor is finicky. Sometimes seems to do falling edge, sometimes doesn't.
   attachInterrupt(digitalPinToInterrupt(reed_pin), screen_reveal, FALLING);
-  attachInterrupt(digitalPinToInterrupt(button_pin), button_raise, RISING);
+  attachInterrupt(digitalPinToInterrupt(newCard_button_pin), newCard_button_raise, RISING);
 
 
 
-  if(button_detector==true){
+  if(newCard_button_detector==true){
     if(file_buffer!=nullptr){
       delete[] file_buffer;
     }
@@ -300,9 +300,21 @@ void loop() {
   while(audio.isPlaying());   //freeze the program while audio plays to avoid the memory leaks.
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
-    button_detector = false;  //This line is very important
+    newCard_button_detector = false;  //This line is very important
 
   }
+
+  if(digitalRead(replay_pin)==HIGH){
+    audio.play(Audio_file);
+    if(audio.isPlaying()){
+      Serial.println(F("Audio replayed"));
+    }
+    while(audio.isPlaying());
+    while(digitalRead(replay_pin)==HIGH){
+      delay(100);
+    }
+  }
+
   if(screen_open){
     Serial.println(F("SCREEN OPEN"));
     audio.play(Audio_file);
