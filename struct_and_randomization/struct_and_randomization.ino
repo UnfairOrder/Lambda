@@ -57,6 +57,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define DISPLAY_CS 6
 
 #define DECK_SIZE 265
+#define CARD_DIR "Cdt"
 
 #define button_pin 2
 #define reed_pin 3
@@ -143,14 +144,11 @@ void score_check(){
   audio.play(score_audio_buffer);
 }
 
-char filename[7];
+char filename[11];
 unsigned short file_size;
 void get_filename(const int &card,char* array){
-  sprintf(array,"%i",card);
-  strcat(array,".txt");
+  sprintf(array,"Cdt/%i.txt",card);
 }
-
-
 
 short unsigned int shuffle=0;
 byte deck_pos = 1;
@@ -239,7 +237,7 @@ void loop() {
     // Serial.print("file opened: ");
     // Serial.print(filename);
     Serial.print(F("card: "));
-    Serial.println(shuffle);
+    Serial.println(filename);
 
     file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
     char file_buffer[file_size];
@@ -257,6 +255,8 @@ void loop() {
     Audio_file = strtok(NULL,"\n");
     Audio_file[strlen(Audio_file)-1] = '\0';   //Add null to end of ding
     strtok(NULL,"\n");
+
+
 
     Serial.println(left);
     Serial.println(right);
