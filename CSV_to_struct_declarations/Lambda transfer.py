@@ -13,7 +13,7 @@ for line in f:
     old_file_path = "Old_name_Audio/"+words[3].rstrip('\n')
     copy(old_file_path,"Audio/")
     old_file = os.path.join("Audio",words[3].rstrip('\n'))
-    new_file = os.path.join("Audio",audio_base[0:8]+".wav")
+    new_file = os.path.join("Audio",audio_base[0:7]+".wav")
     try:
         os.rename(old_file,new_file)
     except FileExistsError:

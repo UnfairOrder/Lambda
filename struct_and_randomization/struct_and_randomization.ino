@@ -231,7 +231,6 @@ void loop() {
   if(button_detector==true){
     //do the card stuff
     //draw a card
-    shuffle=1;
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
     //generate filename
@@ -262,9 +261,9 @@ void loop() {
     Audio_file[strlen(Audio_file)-1] = '\0';
     strtok(NULL,"\n");
 
-    // Serial.println(left);
-    // Serial.println(right);
-    // Serial.println(Audio_file);
+    Serial.println(left);
+    Serial.println(right);
+    Serial.println(Audio_file);
 
   //display on screen
   /*
@@ -284,11 +283,11 @@ void loop() {
     }while(u8g2.nextPage());
 
   //Audio file testing
-  // Audio_file = "Audio/Art-Commerce.wav";
+  // Audio_file = "Audio/Art-Com.wav";
 
   audio.play(Audio_file);
   if(audio.isPlaying()){
-    Serial.println(Audio_file);
+    Serial.println(F("Audio Playing"));
   }
   while(audio.isPlaying());   //freeze the program while audio plays to avoid the memory leaks.
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
@@ -304,6 +303,5 @@ void loop() {
   }
   
 
-  //FOR TESTING THE TIME DELAY MEMORY THEORY
 
 }
