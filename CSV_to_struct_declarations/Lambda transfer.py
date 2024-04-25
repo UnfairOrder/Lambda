@@ -21,8 +21,8 @@ for line in f:
 
     f_out.write(words[0]+'\n')
     f_out.write(words[1]+'\n')
-
-    f_out.write(new_file+'\n')
+    
+    f_out.write("Audio/"+new_file[6:]+'\n')
 
     f_out.close()
     i+=1
