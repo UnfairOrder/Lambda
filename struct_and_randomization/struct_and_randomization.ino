@@ -56,7 +56,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
 
-#define DECK_SIZE 265
+#define DECK_SIZE 259   //if this changes, change the prime factors as well in the card modulus function
 #define CARD_DIR "Cdt"
 
 #define button_pin 2
@@ -160,7 +160,7 @@ short unsigned int card_modulus(){
   short unsigned int random_num=5;
   do{
     random_num = (short unsigned)random(1,264);
-  }while(random_num==5 || random_num == 53);
+  }while(random_num==7 || random_num == 37);
   return random_num;
 }
 
@@ -231,10 +231,11 @@ void loop() {
   if(button_detector==true){
     //do the card stuff
     //draw a card
-    drawn_card = ((drawn_card+deck_pos*shuffle)%DECK_SIZE)+1;
+    shuffle=1;
+    drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
     //generate filename
-
+    
     get_filename(drawn_card,filename);
     //access file
     card_file = SD.open(filename);
@@ -259,12 +260,11 @@ void loop() {
     right = strtok(NULL,"\n");
     Audio_file = strtok(NULL,"\n");
     Audio_file[strlen(Audio_file)-1] = '\0';
-    sprintf(Audio_file,"A/%s",Audio_file);
     strtok(NULL,"\n");
 
-    Serial.println(left);
-    Serial.println(right);
-    Serial.println(Audio_file);
+    // Serial.println(left);
+    // Serial.println(right);
+    // Serial.println(Audio_file);
 
   //display on screen
   /*
@@ -284,10 +284,12 @@ void loop() {
     }while(u8g2.nextPage());
 
   //Audio file testing
-  Audio_file = "Audio/Bad-Good.wav";
+  // Audio_file = "Audio/Art-Commerce.wav";
 
   audio.play(Audio_file);
-  Serial.println(audio.isPlaying());
+  if(audio.isPlaying()){
+    Serial.println(Audio_file);
+  }
   while(audio.isPlaying());   //freeze the program while audio plays to avoid the memory leaks.
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
 
