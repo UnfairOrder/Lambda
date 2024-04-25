@@ -56,7 +56,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
 
-#define DECK_SIZE 259   //if this changes, change the prime factors as well in the card modulus function
+#define DECK_SIZE 256   //if this changes, change the prime factors as well in the card modulus function
 #define CARD_DIR "Cdt"
 
 #define button_pin 2
@@ -145,6 +145,7 @@ void score_check(){
 }
 
 char filename[11];
+char* file_buffer = nullptr;
 unsigned short file_size;
 void get_filename(const int &card,char* array){
   sprintf(array,"Cdt/%i.txt",card);
@@ -160,7 +161,7 @@ short unsigned int card_modulus(){
   short unsigned int random_num=5;
   do{
     random_num = (short unsigned)random(1,264);
-  }while(random_num==7 || random_num == 37);
+  }while(random_num%2==0);
   return random_num;
 }
 
@@ -179,8 +180,11 @@ void screen_reveal(){
 void setup() {
 
   u8g2.setFont(FONT);
+  Serial.begin(9600);
 
   shuffle = card_modulus();
+  Serial.print(F("Shuffle Seed: "));
+  Serial.println(shuffle);
 
   pinMode(button_pin,INPUT_PULLUP);
   pinMode(reed_pin,INPUT_PULLUP);
@@ -188,7 +192,7 @@ void setup() {
   screen_open = !digitalRead(reed_pin);
 
 //      INITIATE SERIAL CONNECTION
-Serial.begin(9600);
+
 
 Serial.println(F("Boot"));
 //        SEED RANDOM NUMBER
@@ -229,6 +233,9 @@ void loop() {
 
 
   if(button_detector==true){
+    if(file_buffer!=nullptr){
+      delete[] file_buffer;
+    }
     //do the card stuff
     //draw a card
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
@@ -245,7 +252,7 @@ void loop() {
     Serial.println(filename);
 
     file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
-    char file_buffer[file_size];
+    file_buffer = new char[file_size];
 
     //read into buffer
     for(int i=0; i<file_size+1; i++){
@@ -264,6 +271,7 @@ void loop() {
     Serial.println(left);
     Serial.println(right);
     Serial.println(Audio_file);
+    Serial.println(drawn_card);
 
   //display on screen
   /*
@@ -297,11 +305,10 @@ void loop() {
   }
   if(screen_open){
     Serial.println(F("SCREEN OPEN"));
+    audio.play(Audio_file);
     // score_check();
     delay(500);
     screen_open=false;
   }
   
-
-
 }
