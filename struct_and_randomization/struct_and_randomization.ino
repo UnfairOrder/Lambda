@@ -52,6 +52,8 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 
+#define POT_CORRECTION 10
+
 
 #define SCREEN_WIDTH 128
 #define FONT u8g2_font_6x12_mf
@@ -86,18 +88,22 @@ TMRpcm audio;
 
 U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
 
-byte scoring_wheel_deg=0;
-byte pointer_deg = 0;
+unsigned short scoring_wheel_deg=0;
+unsigned short pointer_deg = 0;
 short int score_pointer_diff = 0;
 byte score = 0;
 
 void score_check(){
   //get hall sensor degree
-  scoring_wheel_deg = ((byte)(analogRead(SCORING_PIN)-44)*(360.0/933));
+  //Need to store in a larger variable first, then can modulous and cast to unsigned char.
+  scoring_wheel_deg = ((unsigned short)(analogRead(SCORING_PIN)-44)*(360.0/933));
   scoring_wheel_deg = scoring_wheel_deg%181;
+  Serial.print(F("Score Wheel: "));
   Serial.println(scoring_wheel_deg);  
   //get potentiometer degree
-  pointer_deg = (1023-analogRead(POT_PIN))*0.2933; //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
+  // pointer_deg = analogRead(POT_PIN);
+  Serial.println(analogRead(POT_PIN));
+  pointer_deg = (unsigned short)(analogRead(POT_PIN)-POT_CORRECTION)*180.0/(665-POT_CORRECTION); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
   Serial.println(pointer_deg);
@@ -334,5 +340,6 @@ void loop() {
 
   delay(500);
   score_check();
+
   
 }
