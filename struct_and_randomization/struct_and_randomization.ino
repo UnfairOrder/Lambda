@@ -47,14 +47,19 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 //      INITIALIZATIONS
 #define SPEAKER_PIN 9
 #define UNCONNECTED_ANALOG A0
-#define SCORING_PIN A1
+
 #define SD_ChipSelectPin 10
-#define POT_PIN A2
+
 #define PIE_SECTION_DEG 15
 
 //Should be 180 degrees in this space
 #define POT_RIGHT_VAL 884
 #define POT_LEFT_VAL 130
+#define POT_PIN A2
+
+//Scoring stuff
+#define SCORING_OFFSET 127
+#define SCORING_PIN A1
 
 
 #define SCREEN_WIDTH 128
@@ -92,19 +97,19 @@ U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
 
 unsigned short scoring_wheel_deg=0;
 short pointer_deg = 0;
-short int score_pointer_diff = 0;
+short score_pointer_diff = 0;
 byte score = 0;
 
 void score_check(){
   //get hall sensor degree
   //Need to store in a larger variable first, then can modulous and cast to unsigned char.
-  scoring_wheel_deg = ((unsigned short)(analogRead(SCORING_PIN)-44)*(360.0/933));
+  scoring_wheel_deg = ((unsigned short)(analogRead(SCORING_PIN)-SCORING_OFFSET)*(360.0/933));
   scoring_wheel_deg = scoring_wheel_deg%181;
   Serial.print(F("Score Wheel: "));
   Serial.println(scoring_wheel_deg);  
   //get potentiometer degree
   // pointer_deg = analogRead(POT_PIN);
-  Serial.println(analogRead(POT_PIN));
+
   pointer_deg = (unsigned short)(((analogRead(POT_PIN)-POT_LEFT_VAL)*(180.0/(POT_RIGHT_VAL-POT_LEFT_VAL))));
   if(pointer_deg>180){
     pointer_deg = 180;
@@ -115,7 +120,11 @@ void score_check(){
   // pointer_deg = pointer_deg-20;
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
-  Serial.println(pointer_deg);
+  if(score_pointer_diff<0){
+    score_pointer_diff = score_pointer_diff*-1;
+  }
+  Serial.print(F("Score diff:"));
+  Serial.println(score_pointer_diff);
 
   //determine where pot is in scoring range
   //need to remove 1 pt. NO such thing exists in the game
@@ -238,6 +247,9 @@ Serial.println(F("S"));
 
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;
+  audio.quality(1);
+  //setVolume(3) has minimal clipping on max volume.
+  audio.setVolume(3);
   pinMode(SCORING_PIN, INPUT);
 
 }
