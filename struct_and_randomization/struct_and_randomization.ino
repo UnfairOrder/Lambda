@@ -45,14 +45,16 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 
 //      INITIALIZATIONS
-#define SPEAKER_PIN 9;
+#define SPEAKER_PIN 9
 #define UNCONNECTED_ANALOG A0
 #define SCORING_PIN A1
 #define SD_ChipSelectPin 10
 #define POT_PIN A2
-#define PIE_SECTION_DEG 12
+#define PIE_SECTION_DEG 15
 
-#define POT_CORRECTION 50
+//Should be 180 degrees in this space
+#define POT_RIGHT_VAL 884
+#define POT_LEFT_VAL 130
 
 
 #define SCREEN_WIDTH 128
@@ -89,7 +91,7 @@ TMRpcm audio;
 U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
 
 unsigned short scoring_wheel_deg=0;
-unsigned short pointer_deg = 0;
+short pointer_deg = 0;
 short int score_pointer_diff = 0;
 byte score = 0;
 
@@ -103,7 +105,14 @@ void score_check(){
   //get potentiometer degree
   // pointer_deg = analogRead(POT_PIN);
   Serial.println(analogRead(POT_PIN));
-  pointer_deg = (unsigned short)((analogRead(POT_PIN)-POT_CORRECTION)*0.2933); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
+  pointer_deg = (unsigned short)(((analogRead(POT_PIN)-POT_LEFT_VAL)*(180.0/(POT_RIGHT_VAL-POT_LEFT_VAL))));
+  if(pointer_deg>180){
+    pointer_deg = 180;
+  } 
+  if(pointer_deg<0){
+    pointer_deg =0;
+  }
+  // pointer_deg = pointer_deg-20;
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
   Serial.println(pointer_deg);
@@ -338,7 +347,7 @@ void loop() {
     screen_open=false;
   }
 
-  delay(500);
+  delay(1000);
   score_check();
 
   
