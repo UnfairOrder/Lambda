@@ -103,25 +103,26 @@ void score_check(){
   Serial.println(pointer_deg);
 
   //determine where pot is in scoring range
-  if(score_pointer_diff>PIE_SECTION_DEG/2+3*PIE_SECTION_DEG){
+  //need to remove 1 pt. NO such thing exists in the game
+  if(score_pointer_diff>PIE_SECTION_DEG/2+2*PIE_SECTION_DEG){
     score=0;
   }else{
-    if(score_pointer_diff>PIE_SECTION_DEG/2+2*PIE_SECTION_DEG){
-      score=1;
+    // if(score_pointer_diff>PIE_SECTION_DEG/2+2*PIE_SECTION_DEG){
+    //   score=1;
+    // }else{
+    if(score_pointer_diff>PIE_SECTION_DEG/2+1*PIE_SECTION_DEG){
+      score=2;
     }else{
-      if(score_pointer_diff>PIE_SECTION_DEG/2+1*PIE_SECTION_DEG){
-        score=2;
+      if(score_pointer_diff>PIE_SECTION_DEG/2){
+        score=3;
       }else{
-        if(score_pointer_diff>PIE_SECTION_DEG/2){
-          score=3;
-        }else{
-          if(score_pointer_diff<=PIE_SECTION_DEG/2){
-            score=4; 
-          }
+        if(score_pointer_diff<=PIE_SECTION_DEG/2){
+          score=4; 
         }
       }
     }
   }
+  
 
   //Switch case for audio playback
   // switch (score){
@@ -150,7 +151,7 @@ void score_check(){
   //   break;
   // }
   // Serial.println(score_audio_buffer);
-  Serial.print("Score: ");
+  Serial.print(F("Score: "));
   Serial.println(score);
 }
 
@@ -330,5 +331,8 @@ void loop() {
     delay(500);
     screen_open=false;
   }
+
+  delay(500);
+  score_check();
   
 }
