@@ -52,7 +52,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 #define PIE_SECTION_DEG 12
 
-#define POT_CORRECTION 10
+#define POT_CORRECTION 50
 
 
 #define SCREEN_WIDTH 128
@@ -103,7 +103,7 @@ void score_check(){
   //get potentiometer degree
   // pointer_deg = analogRead(POT_PIN);
   Serial.println(analogRead(POT_PIN));
-  pointer_deg = (unsigned short)(analogRead(POT_PIN)-POT_CORRECTION)*180.0/(665-POT_CORRECTION); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
+  pointer_deg = (unsigned short)((analogRead(POT_PIN)-POT_CORRECTION)*0.2933); //TODO Transformation of the value into the degree and rounded to the nearest degree. Should be in the range of a byte value.
   //check if pot degree is in scoring range (Assume center of 4 point slice)
   score_pointer_diff = abs(pointer_deg-scoring_wheel_deg);
   Serial.println(pointer_deg);
