@@ -93,7 +93,7 @@ char* Audio_file={};
 
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 8, 6);
 
 unsigned short scoring_wheel_deg=0;
 short pointer_deg = 0;
