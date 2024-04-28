@@ -306,8 +306,11 @@ if (!SD.begin(SD_ChipSelectPin)){
 
 
 
-
-
+//For text Wrapping Code
+byte i=1;
+byte char_pos = 0;
+byte offset = 0;
+char substr_buf[11];
 
 
 
@@ -367,7 +370,7 @@ void loop() {
     Serial.println(Audio_file);
     Serial.println(drawn_card);
 
-  //display on screen
+  //display on u8g2
   /*
   * TODO: I don't think that the lambda_display function works as is. Test in a new doc to ensure functionality before importing.
   */
@@ -375,11 +378,70 @@ void loop() {
   u8g2.firstPage();
   do{
 
-  u8g2.drawVLine(SCREEN_WIDTH/2,0,64);
-  u8g2.drawVLine(SCREEN_WIDTH/2-1,0,64);
+    u8g2.drawVLine(SCREEN_WIDTH/2,0,64);
+    u8g2.drawVLine(SCREEN_WIDTH/2-1,0,64);
 
-  draw_wrapped_text(left,0,u8g2);  
-  draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
+    // draw_wrapped_text(left,0,u8g2);
+
+    //Draw Left Text
+    u8g2.setFont(FONT);
+    i=1;
+    char_pos = 0;
+    offset = 0;
+    
+
+
+    //does the full lines
+      while (i<=(strlen(left)/10)){
+        //split the string at the nearest space
+        offset=0;
+        while(left[char_pos+9-offset]!=' '){
+          offset++;
+        }
+        strncpy(substr_buf,left+(char_pos),10-offset);
+        substr_buf[10-offset]='\0';
+        u8g2.drawStr(3, i*FONT_HEIGHT+2, substr_buf);
+        i++;
+        char_pos+=10;
+        char_pos-=offset;
+      }
+    //finish up
+      i--;
+      strncpy(substr_buf,left+(char_pos),strlen(left)-(char_pos));
+      substr_buf[strlen(left)-(char_pos)]='\0';
+      u8g2.drawStr(3, (i+1)*FONT_HEIGHT+2, substr_buf);  
+    // draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
+    
+    
+    
+    
+    //right side code
+    i=1;
+    char_pos = 0;
+    offset = 0;
+
+
+    //does the full lines
+      while (i<=(strlen(left)/10)){
+        //split the string at the nearest space
+        offset=0;
+        while(right[char_pos+9-offset]!=' '){
+          offset++;
+        }
+        strncpy(substr_buf,right+(char_pos),10-offset);
+        substr_buf[10-offset]='\0';
+        u8g2.drawStr(SCREEN_WIDTH/2+3, i*FONT_HEIGHT+2, substr_buf);
+        i++;
+        char_pos+=10;
+        char_pos-=offset;
+      }
+    //finish up
+      i--;
+      strncpy(substr_buf,right+(char_pos),strlen(right)-(char_pos));
+      substr_buf[strlen(right)-(char_pos)]='\0';
+      u8g2.drawStr(SCREEN_WIDTH/2+3, (i+1)*FONT_HEIGHT+2, substr_buf);
+
+  // Serial.println(F("SC_DR"));
 
   }while(u8g2.nextPage());
 
