@@ -37,7 +37,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <SD.h>
 #include <SPI.h>
 #include <Wire.h>
-// #include <U8g2lib.h>
+#include <U8g2lib.h>
 #include <TMRpcm.h>
 #include <avr/pgmspace.h>
 #include <Arduino.h>
@@ -63,7 +63,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 
 #define SCREEN_WIDTH 128
-// #define FONT u8g2_font_6x12_mf
+#define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
 
 #define DECK_SIZE 256   //if this changes, change the prime factors as well in the card modulus function
@@ -92,7 +92,7 @@ TMRpcm audio;
 
 
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8, 7);
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, A4, A5, 6, 8, 7);
 
 
 unsigned short scoring_wheel_deg=0;
@@ -230,7 +230,6 @@ void screen_reveal(){
 
 
 
-
                               //SETUP
 void setup() {
   u8g2.begin();
@@ -262,22 +261,25 @@ Serial.println(F("Boot"));
 //        SEED RANDOM NUMBER
 randomSeed(analogRead(UNCONNECTED_ANALOG));
 
-//        BUILD DECK
 
 
 // initialize the SD card
+  // u8g2.clearDisplay();
 
 if (!SD.begin(SD_ChipSelectPin)){
   u8g2.clearDisplay();
   u8g2.firstPage();
   do{
     u8g2.setFont(FONT);
-    u8g2.setCursor(0,20);
-    u8g2.print(F("SD-ER"));
+    u8g2.setCursor(2,20);
+    u8g2.print(F("SD-Er"));
+
   }while(u8g2.nextPage());
   while(1);
+
 }
-Serial.println(F("S"));
+
+
 
 //        SET SPEAKER PIN
   audio.speakerPin = SPEAKER_PIN;
