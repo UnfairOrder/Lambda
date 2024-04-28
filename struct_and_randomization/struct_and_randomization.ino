@@ -37,11 +37,11 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <SD.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <U8g2lib.h>
+// #include <U8g2lib.h>
 #include <TMRpcm.h>
 #include <avr/pgmspace.h>
 #include <Arduino.h>
-#include "lambda_display.h"
+// #include "lambda_display.h"
 
 
 //      INITIALIZATIONS
@@ -63,7 +63,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 
 #define SCREEN_WIDTH 128
-#define FONT u8g2_font_6x12_mf
+// #define FONT u8g2_font_6x12_mf
 #define DISPLAY_CS 6
 
 #define DECK_SIZE 256   //if this changes, change the prime factors as well in the card modulus function
@@ -93,7 +93,8 @@ char* Audio_file={};
 
 TMRpcm audio;
 
-U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 8, 6);
+
+
 
 unsigned short scoring_wheel_deg=0;
 short pointer_deg = 0;
@@ -211,11 +212,33 @@ void screen_reveal(){
   screen_open = true;
 }
 
+// U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               //SETUP
 void setup() {
 
-  u8g2.setFont(FONT);
   Serial.begin(9600);
+
+//This doesn't work for some reason, and I have no idea why...
+  // u8g2.firstPage();
+  // do{
+  //   u8g2.drawVLine(SCREEN_WIDTH/2,0,64);
+  //   u8g2.drawVLine(SCREEN_WIDTH/2-1,0,64);
+  // }while(u8g2.nextPage());
 
   shuffle = card_modulus();
   Serial.print(F("Shuffle Seed: "));
@@ -253,6 +276,19 @@ Serial.println(F("S"));
   pinMode(SCORING_PIN, INPUT);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void loop() {
 
@@ -320,11 +356,6 @@ void loop() {
   // draw_wrapped_text(right,SCREEN_WIDTH/2+3,u8g2);
 
   // }while(u8g2.nextPage());
-  u8g2.setFont(FONT);
-  u8g2.firstPage();
-    do{
-      u8g2.drawStr(0,20,"LAMBDA");
-    }while(u8g2.nextPage());
 
   //Audio file testing
   // Audio_file = "Audio/Art-Com.wav";
@@ -359,8 +390,6 @@ void loop() {
     screen_open=false;
   }
 
-  delay(1000);
-  score_check();
 
   
 }
