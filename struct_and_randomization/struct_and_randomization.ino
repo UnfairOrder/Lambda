@@ -340,6 +340,7 @@ void loop() {
     //draw a card
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
+    
     //generate filename
     
     get_filename(drawn_card,filename);
@@ -398,11 +399,19 @@ void loop() {
       while (i<=(strlen(left)/10)){
         //split the string at the nearest space
         offset=0;
-        while(left[char_pos+9-offset]!=' '){                  //THIS CODE NEEDS TO BE FIXED. ADD SOMETHING HERE TO ACCOUNT FOR WORDS LONGER THAN THE LINE LENGTH. UNDERRATED IS AN EXAMPLE THAT IS CAUSING AN ISSUE.
+        while(left[char_pos+9-offset]!=' '&& offset<9){                  //THIS CODE NEEDS TO BE FIXED. ADD SOMETHING HERE TO ACCOUNT FOR WORDS LONGER THAN THE LINE LENGTH. UNDERRATED IS AN EXAMPLE THAT IS CAUSING AN ISSUE.
           offset++;
         }
-        strncpy(substr_buf,left+(char_pos),10-offset);
-        substr_buf[10-offset]='\0';
+        if(offset>=9){
+          offset = 2;
+          strncpy(substr_buf,left+(char_pos),10-offset);
+          substr_buf[10-offset]='-';
+          substr_buf[10-offset+1]='\0';
+        }else{
+          strncpy(substr_buf,left+(char_pos),10-offset);
+          substr_buf[10-offset]='\0';
+        }
+
         u8g2.drawStr(3, i*FONT_HEIGHT+2, substr_buf);
         i++;
         char_pos+=10;
@@ -428,11 +437,18 @@ void loop() {
       while (i<=(strlen(left)/10)){
         //split the string at the nearest space
         offset=0;
-        while(right[char_pos+9-offset]!=' '){
+        while(right[char_pos+9-offset]!=' '&&offset<9){
           offset++;
         }
-        strncpy(substr_buf,right+(char_pos),10-offset);
-        substr_buf[10-offset]='\0';
+        if(offset>=9){
+          offset = 2;
+          strncpy(substr_buf,right+(char_pos),10-offset);
+          substr_buf[10-offset]='-';
+          substr_buf[10-offset+1]='\0';
+        }else{
+          strncpy(substr_buf,right+(char_pos),10-offset);
+          substr_buf[10-offset]='\0';
+        }
         u8g2.drawStr(SCREEN_WIDTH/2+3, i*FONT_HEIGHT+2, substr_buf);
         i++;
         char_pos+=10;
@@ -444,7 +460,7 @@ void loop() {
       substr_buf[strlen(right)-(char_pos)]='\0';
       u8g2.drawStr(SCREEN_WIDTH/2+3, (i+1)*FONT_HEIGHT+2, substr_buf);
 
-  // Serial.println(F("SC_DR"));
+  // // Serial.println(F("SC_DR"));
 
   }while(u8g2.nextPage());
 
