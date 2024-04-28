@@ -58,7 +58,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define POT_PIN A2
 
 //Scoring stuff
-#define SCORING_OFFSET 127
+#define SCORING_OFFSET 180
 #define SCORING_PIN A1
 
 
