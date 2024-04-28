@@ -41,7 +41,6 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <TMRpcm.h>
 #include <avr/pgmspace.h>
 #include <Arduino.h>
-#include "lambda_display.h"
 
 
 //      INITIALIZATIONS
@@ -62,8 +61,12 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define SCORING_PIN A1
 
 
-#define SCREEN_WIDTH 128
 #define FONT u8g2_font_6x12_mf
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define FONT_WIDTH 6
+#define FONT_HEIGHT 12
+
 #define DISPLAY_CS 6
 
 #define DECK_SIZE 256   //if this changes, change the prime factors as well in the card modulus function
@@ -395,7 +398,7 @@ void loop() {
       while (i<=(strlen(left)/10)){
         //split the string at the nearest space
         offset=0;
-        while(left[char_pos+9-offset]!=' '){
+        while(left[char_pos+9-offset]!=' '){                  //THIS CODE NEEDS TO BE FIXED. ADD SOMETHING HERE TO ACCOUNT FOR WORDS LONGER THAN THE LINE LENGTH. UNDERRATED IS AN EXAMPLE THAT IS CAUSING AN ISSUE.
           offset++;
         }
         strncpy(substr_buf,left+(char_pos),10-offset);
