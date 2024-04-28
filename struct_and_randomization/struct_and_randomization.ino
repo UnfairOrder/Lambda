@@ -73,18 +73,13 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define reed_pin 3
 #define replay_pin 4
 
-// const char zero_point_audio[] PROGMEM= "0pt.wav";
-// const char one_point_audio[] PROGMEM= "1pt.wav";
-// const char two_point_audio[] PROGMEM= "2pt.wav";
-// const char three_point_audio[] PROGMEM= "3pt.wav";
-// const char four_point_audio[] PROGMEM= "4pt.wav";
 
 // PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
 
 //Line for loading strings from array into a string buffer.
 //strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[i])));
 
-char score_audio_buffer[7]; //check that this buffer is long enough. It could need an extra byte but idk.
+char score_audio_buffer[13]; //check that this buffer is long enough. It could need an extra byte but idk.
 
 File card_file;
 char* left = {};
@@ -94,6 +89,10 @@ char* Audio_file={};
 TMRpcm audio;
 
 
+
+
+
+U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8, 7);
 
 
 unsigned short scoring_wheel_deg=0;
@@ -175,9 +174,13 @@ void score_check(){
   //   Serial.println(F("SCORE ERROR"));
   //   break;
   // }
-  // Serial.println(score_audio_buffer);
   Serial.print(F("Score: "));
   Serial.println(score);
+  sprintf(score_audio_buffer, "Audio/%ipt.wav",score);
+  Serial.println(score_audio_buffer);
+  audio.play(score_audio_buffer);
+  while(audio.isPlaying());
+
 }
 
 char filename[11];
@@ -212,7 +215,7 @@ void screen_reveal(){
   screen_open = true;
 }
 
-// U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, 13, 11, 6, 8);
+
 
 
 
@@ -230,19 +233,21 @@ void screen_reveal(){
 
                               //SETUP
 void setup() {
+  u8g2.begin();
+    Serial.begin(9600);
 
-  Serial.begin(9600);
 
-//This doesn't work for some reason, and I have no idea why...
-  // u8g2.firstPage();
-  // do{
-  //   u8g2.drawVLine(SCREEN_WIDTH/2,0,64);
-  //   u8g2.drawVLine(SCREEN_WIDTH/2-1,0,64);
-  // }while(u8g2.nextPage());
+  u8g2.firstPage();
+  do{
+    u8g2.setFont(FONT);
+    u8g2.drawStr(2,20,"LAMBDA");
+  }while(u8g2.nextPage());
+
 
   shuffle = card_modulus();
   Serial.print(F("Shuffle Seed: "));
   Serial.println(shuffle);
+
 
   pinMode(newCard_button_pin,INPUT_PULLUP);
   pinMode(reed_pin,INPUT_PULLUP);
@@ -261,9 +266,15 @@ randomSeed(analogRead(UNCONNECTED_ANALOG));
 
 
 // initialize the SD card
-Serial.print(F("Init:"));
+
 if (!SD.begin(SD_ChipSelectPin)){
-  Serial.println(F("E"));
+  u8g2.clearDisplay();
+  u8g2.firstPage();
+  do{
+    u8g2.setFont(FONT);
+    u8g2.setCursor(0,20);
+    u8g2.print(F("SD-ER"));
+  }while(u8g2.nextPage());
   while(1);
 }
 Serial.println(F("S"));
@@ -357,8 +368,6 @@ void loop() {
 
   // }while(u8g2.nextPage());
 
-  //Audio file testing
-  // Audio_file = "Audio/Art-Com.wav";
 
   audio.play(Audio_file);
   if(audio.isPlaying()){
@@ -389,6 +398,7 @@ void loop() {
     delay(500);
     screen_open=false;
   }
+
 
 
   
