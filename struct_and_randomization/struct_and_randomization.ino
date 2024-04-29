@@ -1,3 +1,20 @@
+/*
+* LAMBDA PROJECT
+* COLORADO SCHOOL OF MINES
+* EDNS 492 - PRODUCT REDESIGN
+* Prof. Michael Sheppard
+*
+*
+* Michael Leoni
+* Avery Lorenzato
+* Vivan Voyan
+* Maddie Pool
+* Kayla Long
+*/
+
+
+
+
 // Audio file playing
 /*
 * file type must be .wav
@@ -62,6 +79,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 #define TITLE_FONT u8g2_font_bubble_tr
 #define FONT u8g2_font_6x12_mf
+#define SMALL_FONT u8g2_font_u8glib_4_tf
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define FONT_WIDTH 6
@@ -83,6 +101,45 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 
 //Line for loading strings from array into a string buffer.
 //strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[i])));
+
+
+#define lambda_height 25
+#define lambda_width 24
+// 'Orange_lambda', 24x25px
+const unsigned char epd_bitmap_Orange_lambda [] PROGMEM= {
+
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x0f, 0x00, 0xc0, 0x1f, 0x00, 0xc0, 0x1f, 0x00, 0x00, 
+	0x1e, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x7e, 
+	0x00, 0x00, 0xfe, 0x00, 0x00, 0xff, 0x00, 0x00, 0xff, 0x01, 0x80, 0xe7, 0x01, 0xc0, 0xe7, 0x01, 
+	0xc0, 0xc3, 0x03, 0xe0, 0xc1, 0x03, 0xf0, 0xc1, 0x07, 0xf0, 0x80, 0x3f, 0x78, 0x80, 0x7f, 0x7c, 
+	0x00, 0x7f, 0x3c, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+// 'institutional-logo', 99x32px
+#define logo_width 26
+#define logo_height 25
+const unsigned char epd_bitmap_institutional_logo [] PROGMEM = {
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 
+	0x00, 0x84, 0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x01, 0x02, 0x00, 0x80, 0x00, 0x04, 0x00, 
+	0x40, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x86, 0x10, 0x00, 0x20, 0x8a, 0x11, 0x00, 
+	0x10, 0x10, 0x20, 0x00, 0x10, 0x30, 0x20, 0x00, 0x10, 0x48, 0x20, 0x00, 0x00, 0x84, 0x00, 0x00, 
+	0x08, 0x02, 0x41, 0x00, 0x08, 0x48, 0x40, 0x00, 0x08, 0x00, 0x40, 0x00, 0x18, 0x00, 0x20, 0x00, 
+	0x60, 0x00, 0x18, 0x00, 0x00, 0xdf, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x00, 0x00
+};
+
+
+
+
+// Array of all bitmaps for convenience. (Total bytes used to store images in PROGMEM = 432)
+const int epd_bitmap_allArray_LEN = 1;
+const unsigned char* epd_bitmap_allArray[1] = {
+	epd_bitmap_institutional_logo
+};
+
+
+
+
+
 
 char score_audio_buffer[13]; //check that this buffer is long enough. It could need an extra byte but idk.
 
@@ -211,12 +268,19 @@ void setup() {
   u8g2.firstPage();
   do{
     u8g2.setFont(TITLE_FONT);
-    u8g2.drawStr(2,30,"LAMBDA");
+    u8g2.drawStr(2,25,"LAMBDA");
+    
+    u8g2.drawXBMP(2,33,lambda_width,lambda_height,epd_bitmap_Orange_lambda);
+    // u8g2.drawXBMP(128-logo_width-2,33,logo_width,logo_height,epd_bitmap_institutional_logo);
+    u8g2.setCursor(2+lambda_width+2,SCREEN_HEIGHT-10-1);
+    u8g2.setFont(SMALL_FONT);
+    u8g2.print("COLORADO SCHOOL");
+    u8g2.setCursor(2+lambda_width+2,SCREEN_HEIGHT-5-1);
+    u8g2.print("OF MINES");
   }while(u8g2.nextPage());
 
 
   shuffle = card_modulus();
-
 
 
   pinMode(newCard_button_pin,INPUT_PULLUP);
@@ -228,10 +292,9 @@ void setup() {
 //      INITIATE SERIAL CONNECTION
 
 
-
 //        SEED RANDOM NUMBER
-randomSeed(analogRead(UNCONNECTED_ANALOG));
-
+  randomSeed(analogRead(UNCONNECTED_ANALOG));
+  pinMode(SCORING_PIN, INPUT);
 
 
 // initialize the SD card
@@ -244,7 +307,7 @@ if (!SD.begin(SD_ChipSelectPin)){
   do{
     u8g2.setFont(FONT);
     u8g2.setCursor(2,20);
-    u8g2.print(F("SD-Er"));
+    u8g2.print(F("SD-Error"));
 
   }while(u8g2.nextPage());
   while(1);
@@ -261,24 +324,28 @@ if (!SD.begin(SD_ChipSelectPin)){
   audio.quality(1);
   //setVolume(3) has minimal clipping on max volume.
   audio.setVolume(3);
-  pinMode(SCORING_PIN, INPUT);
-  digitalWrite(VIBRATE_PIN,HIGH);
-  delay(500);
-  digitalWrite(VIBRATE_PIN,LOW);
-  delay(500);
-  digitalWrite(VIBRATE_PIN,HIGH);
-  delay(500);
-  digitalWrite(VIBRATE_PIN,LOW);
+
 
   delay(5000);
   u8g2.clearDisplay();
   u8g2.firstPage();
   do{
     u8g2.setFont(FONT);
-    u8g2.setCursor(2,20);
-    u8g2.print(F("Draw A Card"));
+    u8g2.setCursor(5,20);
+    u8g2.print(F("Please Draw A Card"));
 
   }while(u8g2.nextPage());
+
+
+
+
+  digitalWrite(VIBRATE_PIN,HIGH);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,LOW);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,HIGH);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,LOW);
 
   
   Serial.println(F("BOOT COMPLETE"));
