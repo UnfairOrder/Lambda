@@ -60,7 +60,7 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define SCORING_OFFSET 180
 #define SCORING_PIN A1
 
-
+#define TITLE_FONT u8g2_font_bubble_tr
 #define FONT u8g2_font_6x12_mf
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -75,6 +75,8 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #define newCard_button_pin 2
 #define reed_pin 3
 #define replay_pin 4
+
+#define VIBRATE_PIN 10
 
 
 // PGM_P const score_audio_table[] = {zero_point_audio, one_point_audio, two_point_audio, three_point_audio, four_point_audio};
@@ -92,9 +94,7 @@ char* Audio_file={};
 
 TMRpcm audio;
 
-
 U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, A4, A5, 6, 8, 7);
-
 
 unsigned short scoring_wheel_deg=0;
 short pointer_deg = 0;
@@ -146,33 +146,6 @@ void score_check(){
     }
   }
   
-
-  //Switch case for audio playback
-  // switch (score){
-  //   case 0:
-  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-  //   break;
-
-  //   case 1:
-  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-  //   break;
-
-  //   case 2:
-  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-  //   break;
-
-  //   case 3:
-  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-  //   break;
-
-  //   case 4:
-  //   strcpy_P(score_audio_buffer, (PGM_P)pgm_read_word(&(score_audio_table[score])));
-  //   break;
-
-  //   default:
-  //   Serial.println(F("SCORE ERROR"));
-  //   break;
-  // }
 
   sprintf(score_audio_buffer, "Audio/%ipt.wav",score);
   audio.play(score_audio_buffer);
@@ -230,14 +203,15 @@ void screen_reveal(){
 
                               //SETUP
 void setup() {
+  pinMode(VIBRATE_PIN,OUTPUT);
   u8g2.begin();
   Serial.begin(9600);
 
 
   u8g2.firstPage();
   do{
-    u8g2.setFont(FONT);
-    u8g2.drawStr(2,20,"LAMBDA");
+    u8g2.setFont(TITLE_FONT);
+    u8g2.drawStr(2,30,"LAMBDA");
   }while(u8g2.nextPage());
 
 
@@ -288,11 +262,19 @@ if (!SD.begin(SD_ChipSelectPin)){
   //setVolume(3) has minimal clipping on max volume.
   audio.setVolume(3);
   pinMode(SCORING_PIN, INPUT);
+  digitalWrite(VIBRATE_PIN,HIGH);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,LOW);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,HIGH);
+  delay(500);
+  digitalWrite(VIBRATE_PIN,LOW);
 
-  delay(2000);
+  delay(5000);
   u8g2.clearDisplay();
   u8g2.firstPage();
   do{
+    u8g2.setFont(FONT);
     u8g2.setCursor(2,20);
     u8g2.print(F("Draw A Card"));
 
@@ -320,7 +302,7 @@ char substr_buf[11];
 
 
 void loop() {
-  shuffle=1;
+
   //Read scoring pin
   // delay(200);
   // Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
@@ -330,12 +312,7 @@ void loop() {
   //Reed sensor is finicky. Sometimes seems to do falling edge, sometimes doesn't.
   attachInterrupt(digitalPinToInterrupt(reed_pin), screen_reveal, FALLING);
   attachInterrupt(digitalPinToInterrupt(newCard_button_pin), newCard_button_raise, RISING);
-
-
-  if(deck_pos<DECK_SIZE){
-    newCard_button_detector=true;
-  }
-  
+ 
 
 
   if(newCard_button_detector==true){
