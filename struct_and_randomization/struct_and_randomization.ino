@@ -340,7 +340,12 @@ void loop() {
     //draw a card
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
-    
+
+
+    //TESTING
+    // drawn_card = 107;   //Least evil company card
+    // drawn_card = 28;
+
     //generate filename
     
     get_filename(drawn_card,filename);
@@ -392,15 +397,17 @@ void loop() {
     i=1;
     char_pos = 0;
     offset = 0;
+
     
 
 
     //does the full lines
-      while (i<=(strlen(left)/10)){
+      while (i<=(strlen(left)/9)){
         //split the string at the nearest space
         offset=0;
         while(left[char_pos+9-offset]!=' '&& offset<9){                  //THIS CODE NEEDS TO BE FIXED. ADD SOMETHING HERE TO ACCOUNT FOR WORDS LONGER THAN THE LINE LENGTH. UNDERRATED IS AN EXAMPLE THAT IS CAUSING AN ISSUE.
           offset++;
+
         }
         if(offset>=9){
           offset = 2;
@@ -408,10 +415,11 @@ void loop() {
           substr_buf[10-offset]='-';
           substr_buf[10-offset+1]='\0';
         }else{
+          
           strncpy(substr_buf,left+(char_pos),10-offset);
           substr_buf[10-offset]='\0';
         }
-
+        Serial.println(offset);
         u8g2.drawStr(3, i*FONT_HEIGHT+2, substr_buf);
         i++;
         char_pos+=10;
@@ -434,7 +442,7 @@ void loop() {
 
 
     //does the full lines
-      while (i<=(strlen(left)/10)){
+      while (i<=(strlen(left)/9)){
         //split the string at the nearest space
         offset=0;
         while(right[char_pos+9-offset]!=' '&&offset<9){
