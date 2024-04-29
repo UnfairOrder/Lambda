@@ -89,10 +89,8 @@ char* left = {};
 char* right={};
 char* Audio_file={};
 
+
 TMRpcm audio;
-
-
-
 
 
 U8G2_SSD1309_128X64_NONAME2_1_4W_SW_SPI u8g2(U8G2_R2, A4, A5, 6, 8, 7);
@@ -278,6 +276,8 @@ if (!SD.begin(SD_ChipSelectPin)){
   while(1);
 
 
+
+
 }
 
 
@@ -289,7 +289,7 @@ if (!SD.begin(SD_ChipSelectPin)){
   audio.setVolume(3);
   pinMode(SCORING_PIN, INPUT);
 
-
+  delay(2000);
   u8g2.clearDisplay();
   u8g2.firstPage();
   do{
@@ -300,6 +300,7 @@ if (!SD.begin(SD_ChipSelectPin)){
 
   
   Serial.println(F("BOOT COMPLETE"));
+  
 } //END SETUP
 
 
@@ -319,7 +320,7 @@ char substr_buf[11];
 
 
 void loop() {
-
+  shuffle=1;
   //Read scoring pin
   // delay(200);
   // Serial.println((analogRead(SCORING_PIN)-44)*(360.0/933));
@@ -331,6 +332,11 @@ void loop() {
   attachInterrupt(digitalPinToInterrupt(newCard_button_pin), newCard_button_raise, RISING);
 
 
+  if(deck_pos<DECK_SIZE){
+    newCard_button_detector=true;
+  }
+  
+
 
   if(newCard_button_detector==true){
     if(file_buffer!=nullptr){
@@ -340,22 +346,35 @@ void loop() {
     //draw a card
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
-    Serial.println(deck_pos);
+
+
+
 
 
     //TESTING
     // drawn_card = 107;   //Least evil company card
-    drawn_card = 48;
+    // drawn_card = 48;
+  //THE PROBLEM CARDS
+    // if(drawn_card==48){ //This card is cursed
+    //   deck_pos++;
+    // }
+    // if(drawn_card==10){
+    //   deck_pos++;
+    // }
+    // if(drawn_card==60){
+    //   deck_pos++;
+    // }
 
-    if(drawn_card==48){ //This card is cursed
-      drawn_card++;
-    }
+    
+
+    Serial.print("Card: ");
+    Serial.println(drawn_card);
 
     //generate filename
     
     get_filename(drawn_card,filename);
-    Serial.print(F("file opened: "));
-    Serial.println(filename);
+    // Serial.print(F("file opened: "));
+    // Serial.println(filename);
     //access file
     card_file = SD.open(filename);
     card_file.seek(0);  //go to beginning of file
@@ -364,6 +383,7 @@ void loop() {
 
 
     file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
+    Serial.println(card_file.size());
     file_buffer = new char[file_size];
 
     //read into buffer
@@ -374,11 +394,11 @@ void loop() {
  
     // Serial.println(file_buffer);
 
-    left = strtok(file_buffer,"\n");
-    right = strtok(NULL,"\n");
-    Audio_file = strtok(NULL,"\n");
-    Audio_file[strlen(Audio_file)-1] = '\0';
-    strtok(NULL,"\n");
+    left = strtok(file_buffer,"\n\r");
+    right = strtok(NULL,"\n\r");
+    Audio_file = strtok(NULL,"\n\r");
+    Audio_file[strlen(Audio_file)] = '\0';
+    strtok(NULL,"\n\r");
 
 
 
@@ -413,7 +433,7 @@ void loop() {
       while (i<=(strlen(left)/9)){
         //split the string at the nearest space
         offset=0;
-        while(left[char_pos+9-offset]!=' '&& offset<9){                  //THIS CODE NEEDS TO BE FIXED. ADD SOMETHING HERE TO ACCOUNT FOR WORDS LONGER THAN THE LINE LENGTH. UNDERRATED IS AN EXAMPLE THAT IS CAUSING AN ISSUE.
+        while(left[char_pos+9-offset]!=' '&& offset<9){ 
           offset++;
 
         }
@@ -494,8 +514,9 @@ void loop() {
 
   if(digitalRead(replay_pin)==HIGH){
     audio.play(Audio_file);
-    if(audio.isPlaying()){
-      // Serial.println(F("Audio replayed"));
+    if(!audio.isPlaying()){
+        Serial.print(F("FAILED: "));
+        Serial.println(drawn_card);
     }
     while(audio.isPlaying());
     while(digitalRead(replay_pin)==HIGH){

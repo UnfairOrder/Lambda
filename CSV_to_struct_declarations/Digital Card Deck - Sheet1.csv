@@ -115,7 +115,7 @@ Ineffective,Effective,,Ineffective-Effective.wav
 Unbelievable,Believable,,Unbelievable-Believable.wav
 Trashy,Classy,,Trashy-Classy.wav
 Temporary,Permanent,,Temp-Perm.wav
-Looks like a person,Doesn't look like a person,,LooksPerson-Doesnt.wav
+Looks like a person,Doesnt look like a person,,LooksPerson-Doesnt.wav
 Tastes bad,Tastes good,,TastesBad-TastesGood.wav
 Sport,Game,,Sport-Game.wav
 Uncool,Cool,,Uncool-Cool.wav
@@ -197,7 +197,7 @@ Derivative,Original,,Derivative-Original.wav
 Unsexy color,Sexy color,,UnsexyColor-SexyColor.wav
 Benefits you,Benefits everyone,,BenefitsYou-BenefitsEveryone.wav
 Powerless,Powerful,,Powerless-Powerful.wav
-Vapes,Doesn’t vape,,Vapes-Doesnt.wav
+Vapes,Doesnt vape,,Vapes-Doesnt.wav
 Fruit,Vegetable,,Fruit-Vegetable.wav
 Science,Pseudoscience,,Science-Pseudoscience.wav
 Funny topic,Serious topic,,FunnyTopic-SeriousTopic.wav
@@ -221,7 +221,7 @@ Illegal,Legal,,Illegal-Legal.wav
 Deep thought,Shallow thought,,DeepThough-ShallowThought.wav
 Bad school,Good school,,BadSchool-GoodSchool.wav
 Never on time,Always on time,,NeverOnTime-AlwaysOnTime.wav
-Won't live to 100,Will live to 100 ,,WontLive-WillLive.wav
+Wont live to 100,Will live to 100 ,,WontLive-WillLive.wav
 Bad Disney character,Good Disney character,,BadDisney-GoodDisney.wav
 Bad president,Good president,,BadPresident-GoodPresident.wav
 Weird,Strange,,Weird-Strange.wav
@@ -234,9 +234,9 @@ Endangered species,Overpopulated species,,EndangeredSpecies-OverpoopSpecies.wav
 Blue,Green,,Blue-Green.wav
 Thrilling,Terrifying,,Thrilling-Terrifying.wav
 Expected,Unexpected,,Expected-Unexpected.wav
-Person you could beat up,Person who’d beat you up,,YouBeat-BeatYou.wav
+Person you could beat up,Person whod beat you up,,YouBeat-BeatYou.wav
 Underrated game,Overrated game,,UnGame-OvGame.wav
-You want your parents to watch you do it,You don't want your parents to watch you do it,,ParentsSee-No.wav
+You want your parents to watch you do it,You dont want your parents to watch you do it,,ParentsSee-No.wav
 Wise,Intelligent,,Wise-Intelligent.wav
 Unsexy emoji,Sexy emoji,,UnsexyEmoji-SexyEmoji.wav
 Unimportant,Important,,Unimportant-Important.wav
@@ -249,7 +249,7 @@ Unreasonable phobia,Reasonable phobia,,UnPhobia-ReasPhobia.wav
 Guilty pleasure,Actually just bad,,GuiltyPleas-JustBad.wav
 Conventional wisdom ,Fringe belief,,ConvWisdom-FringeBelief.wav
 Tick,Tock,,Tick-Tock.wav
-Unsexy Pokémon,Sexy Pokemon,,UnsexyPoke-SexyPoke.wav
+Unsexy Pokemon,Sexy Pokemon,,UnsexyPoke-SexyPoke.wav
 Etiquette ,Manners,,Etiquette-Manners.wav
 Nerd,Jock,,Nerd-Jock.wav
 Not art,Art,,NotArt-Art.wav
