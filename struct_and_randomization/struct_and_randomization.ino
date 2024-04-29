@@ -181,12 +181,13 @@ void score_check(){
   while(audio.isPlaying());
 
 }
-
+// const char* card_48_file = {"Cdt/48.txt"};
 char filename[11];
 char* file_buffer = nullptr;
 unsigned short file_size;
 void get_filename(const int &card,char* array){
-  sprintf(array,"Cdt/%i.txt",card);
+  sprintf(array,"Cdt/%i",card);
+  strcat(array,".txt");
 }
 
 short unsigned int shuffle=0;
@@ -232,7 +233,7 @@ void screen_reveal(){
                               //SETUP
 void setup() {
   u8g2.begin();
-    Serial.begin(9600);
+  Serial.begin(9600);
 
 
   u8g2.firstPage();
@@ -267,6 +268,7 @@ randomSeed(analogRead(UNCONNECTED_ANALOG));
 if (!SD.begin(SD_ChipSelectPin)){
   u8g2.clearDisplay();
   u8g2.firstPage();
+  Serial.println(F("SD_ERROR"));
   do{
     u8g2.setFont(FONT);
     u8g2.setCursor(2,20);
@@ -274,6 +276,7 @@ if (!SD.begin(SD_ChipSelectPin)){
 
   }while(u8g2.nextPage());
   while(1);
+
 
 }
 
@@ -295,7 +298,9 @@ if (!SD.begin(SD_ChipSelectPin)){
 
   }while(u8g2.nextPage());
 
-}
+  
+  Serial.println(F("BOOT COMPLETE"));
+} //END SETUP
 
 
 
@@ -340,16 +345,22 @@ void loop() {
 
     //TESTING
     // drawn_card = 107;   //Least evil company card
-    // drawn_card = 231;
+    drawn_card = 48;
+
+    if(drawn_card==48){ //This card is cursed
+      drawn_card++;
+    }
 
     //generate filename
     
     get_filename(drawn_card,filename);
+    Serial.print(F("file opened: "));
+    Serial.println(filename);
     //access file
     card_file = SD.open(filename);
     card_file.seek(0);  //go to beginning of file
-    Serial.print(F("file opened: "));
-    Serial.println(filename);
+
+  
 
 
     file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
