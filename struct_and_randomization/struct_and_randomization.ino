@@ -39,15 +39,15 @@ select input (Data when it's high or '1' and Command when it's low or '0'). Goog
 #include <Wire.h>
 #include <U8g2lib.h>
 #include <TMRpcm.h>
-#include <avr/pgmspace.h>
+
 #include <Arduino.h>
 
 
 //      INITIALIZATIONS
-#define SPEAKER_PIN 9
+#define SPEAKER_PIN 5
 #define UNCONNECTED_ANALOG A0
 
-#define SD_ChipSelectPin 10
+#define SD_ChipSelectPin 53
 
 #define PIE_SECTION_DEG 15
 
@@ -108,8 +108,7 @@ void score_check(){
   //Need to store in a larger variable first, then can modulous and cast to unsigned char.
   scoring_wheel_deg = ((unsigned short)(analogRead(SCORING_PIN)-SCORING_OFFSET)*(360.0/933));
   scoring_wheel_deg = scoring_wheel_deg%181;
-  Serial.print(F("Score Wheel: "));
-  Serial.println(scoring_wheel_deg);  
+  
   //get potentiometer degree
   // pointer_deg = analogRead(POT_PIN);
 
@@ -126,8 +125,7 @@ void score_check(){
   if(score_pointer_diff<0){
     score_pointer_diff = score_pointer_diff*-1;
   }
-  Serial.print(F("Score diff:"));
-  Serial.println(score_pointer_diff);
+
 
   //determine where pot is in scoring range
   //need to remove 1 pt. NO such thing exists in the game
@@ -177,10 +175,8 @@ void score_check(){
   //   Serial.println(F("SCORE ERROR"));
   //   break;
   // }
-  Serial.print(F("Score: "));
-  Serial.println(score);
+
   sprintf(score_audio_buffer, "Audio/%ipt.wav",score);
-  Serial.println(score_audio_buffer);
   audio.play(score_audio_buffer);
   while(audio.isPlaying());
 
@@ -247,8 +243,7 @@ void setup() {
 
 
   shuffle = card_modulus();
-  Serial.print(F("Shuffle Seed: "));
-  Serial.println(shuffle);
+
 
 
   pinMode(newCard_button_pin,INPUT_PULLUP);
@@ -260,7 +255,7 @@ void setup() {
 //      INITIATE SERIAL CONNECTION
 
 
-Serial.println(F("Boot"));
+
 //        SEED RANDOM NUMBER
 randomSeed(analogRead(UNCONNECTED_ANALOG));
 
@@ -340,11 +335,12 @@ void loop() {
     //draw a card
     drawn_card = ((deck_pos*shuffle)%DECK_SIZE)+1;
     deck_pos+=1;
+    Serial.println(deck_pos);
 
 
     //TESTING
     // drawn_card = 107;   //Least evil company card
-    // drawn_card = 28;
+    // drawn_card = 231;
 
     //generate filename
     
@@ -352,10 +348,9 @@ void loop() {
     //access file
     card_file = SD.open(filename);
     card_file.seek(0);  //go to beginning of file
-    // Serial.print("file opened: ");
-    // Serial.print(filename);
-    Serial.print(F("card: "));
+    Serial.print(F("file opened: "));
     Serial.println(filename);
+
 
     file_size = card_file.size();//card_file.size(); //this is how many characters long the file is.
     file_buffer = new char[file_size];
@@ -374,10 +369,12 @@ void loop() {
     Audio_file[strlen(Audio_file)-1] = '\0';
     strtok(NULL,"\n");
 
-    Serial.println(left);
-    Serial.println(right);
-    Serial.println(Audio_file);
-    Serial.println(drawn_card);
+
+
+  Serial.println(left);
+  Serial.println(right);
+  Serial.println(Audio_file);
+
 
   //display on u8g2
   /*
@@ -419,7 +416,7 @@ void loop() {
           strncpy(substr_buf,left+(char_pos),10-offset);
           substr_buf[10-offset]='\0';
         }
-        Serial.println(offset);
+        // Serial.println(offset);
         u8g2.drawStr(3, i*FONT_HEIGHT+2, substr_buf);
         i++;
         char_pos+=10;
@@ -475,7 +472,7 @@ void loop() {
 
   audio.play(Audio_file);
   if(audio.isPlaying()){
-    Serial.println(F("Audio Playing"));
+
   }
   while(audio.isPlaying());   //freeze the program while audio plays to avoid the memory leaks.
   // Serial.println("Audio played");  //SD card might need to be FAT16 instead of FAT32
@@ -487,7 +484,7 @@ void loop() {
   if(digitalRead(replay_pin)==HIGH){
     audio.play(Audio_file);
     if(audio.isPlaying()){
-      Serial.println(F("Audio replayed"));
+      // Serial.println(F("Audio replayed"));
     }
     while(audio.isPlaying());
     while(digitalRead(replay_pin)==HIGH){
@@ -496,7 +493,7 @@ void loop() {
   }
 
   if(screen_open){
-    Serial.println(F("SCREEN OPEN"));
+    // Serial.println(F("SCREEN OPEN"));
     score_check();
     // score_check();
     delay(500);
